@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"database/sql"
 	"gopkg.in/gorp.v1"
 	"log"
@@ -46,6 +47,7 @@ func Cors() gin.HandlerFunc {
 }
 
 func main() {
+	fmt.Println("Main()")
 	r := gin.Default()
 
 	r.Use(Cors())

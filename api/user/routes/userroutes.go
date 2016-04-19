@@ -9,7 +9,6 @@ func Init(r *gin.Engine) {
 	v1 := r.Group("api/v1")
 	{
 		v1.GET("/users", usercontroller.GetUsers)
-		v1.GET("/hooktest", usercontroller.GetUsers)
 		v1.GET("/users/:id", usercontroller.GetUser)
 		v1.POST("/users", usercontroller.PostUser)
 		v1.PUT("/users/:id", usercontroller.UpdateUser)

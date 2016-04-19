@@ -10,6 +10,7 @@ import (
 	"database/sql"
 	"github.com/manjeshpv/bb/api/user/model"
 	"fmt"
+	"github.com/manjeshpv/bb/api/chain/model"
 )
 
 func checkErr(err error, msg string) {
@@ -33,6 +34,7 @@ func initDb() *gorp.DbMap {
 	checkErr(err, "sql.Open failed")
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	dbmap.AddTableWithName(usermodel.User{}, "user").SetKeys(true, "Id")
+	dbmap.AddTableWithName(chainmodel.Chain{}, "chain").SetKeys(true, "Id")
 	err = dbmap.CreateTablesIfNotExists()
 	checkErr(err, "Create tables failed")
 

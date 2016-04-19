@@ -18,6 +18,7 @@ func checkErr(err error, msg string) {
 func GetChains(c *gin.Context) {
 	var chains []chainmodel.Chain
 	dbmap := dbconfig.Init()
+	defer dbmap.Db.Close()
 	_, err := dbmap.Select(&chains, "SELECT * FROM chain")
 
 	if err == nil {
@@ -40,8 +41,8 @@ func GetChain(c *gin.Context) {
 
 		content := &chainmodel.Chain{
 			Id:        chain_id,
-			Firstname: chain.Firstname,
-			Lastname:  chain.Lastname,
+			Name: chain.Name,
+
 		}
 		c.JSON(200, content)
 	} else {
@@ -57,15 +58,15 @@ func PostChain(c *gin.Context) {
 
 	log.Println(chain)
 	dbmap := dbconfig.Init()
-	if chain.Firstname != "" && chain.Lastname != "" {
+	if chain.Name != "" {
 
-		if insert, _ := dbmap.Exec(`INSERT INTO chain (firstname, lastname) VALUES (?, ?)`, chain.Firstname, chain.Lastname); insert != nil {
+		if insert, _ := dbmap.Exec(`INSERT INTO chain (name) VALUES (?)`, chain.Name, ); insert != nil {
 			chain_id, err := insert.LastInsertId()
 			if err == nil {
 				content := &chainmodel.Chain{
 					Id:        chain_id,
-					Firstname: chain.Firstname,
-					Lastname:  chain.Lastname,
+					Name: chain.Name,
+
 				}
 				c.JSON(201, content)
 			} else {
@@ -94,11 +95,11 @@ func UpdateChain(c *gin.Context) {
 
 		chain := chainmodel.Chain{
 			Id:        chain_id,
-			Firstname: json.Firstname,
-			Lastname:  json.Lastname,
+			Name: json.Name,
+
 		}
 
-		if chain.Firstname != "" && chain.Lastname != "" {
+		if chain.Name != ""  {
 			_, err = dbmap.Update(&chain)
 
 			if err == nil {

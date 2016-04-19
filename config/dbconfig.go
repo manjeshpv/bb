@@ -11,6 +11,7 @@ import (
 	"github.com/manjeshpv/bb/api/user/model"
 	"fmt"
 	"github.com/manjeshpv/bb/api/chain/model"
+	"github.com/manjeshpv/bb/api/hotel/model"
 )
 
 func checkErr(err error, msg string) {
@@ -33,8 +34,17 @@ func initDb() *gorp.DbMap {
 	db, err := sql.Open("mysql", DBUrl())
 	checkErr(err, "sql.Open failed")
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
+
+	// Will log all SQL statements + args as they are run
+	// The first arg is a string prefix to prepend to all log messages
+	dbmap.TraceOn("[gorp]", log.New(os.Stdout, "myapp:", log.Lmicroseconds))
+
+	// Turn off tracing
+	// dbmap.TraceOff()
+
 	dbmap.AddTableWithName(usermodel.User{}, "user").SetKeys(true, "Id")
 	dbmap.AddTableWithName(chainmodel.Chain{}, "chain").SetKeys(true, "Id")
+	dbmap.AddTableWithName(hotelmodel.Hotel{}, "hotel").SetKeys(true, "Id")
 	err = dbmap.CreateTablesIfNotExists()
 	checkErr(err, "Create tables failed")
 

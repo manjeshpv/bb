@@ -1,9 +1,8 @@
 package chainmodel
 
 type Chain struct {
-	Id        int64  `db:"id" json:"id"`
-	Firstname string `db:"firstname" json:"firstname"`
-	Lastname  string `db:"lastname" json:"lastname"`
+	Id        int64  `db:"id, primarykey, autoincrement" json:"id"`
+	Name string `db:"name" json:"name"`
 }
 
 type Chains []Chain

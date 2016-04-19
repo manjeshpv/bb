@@ -8,10 +8,7 @@ import (
 	"log"
 	"gopkg.in/gorp.v1"
 	"database/sql"
-	"github.com/manjeshpv/bb/api/user/model"
 	"fmt"
-	"github.com/manjeshpv/bb/api/chain/model"
-	"github.com/manjeshpv/bb/api/hotel/model"
 )
 
 func checkErr(err error, msg string) {
@@ -41,12 +38,6 @@ func initDb() *gorp.DbMap {
 
 	// Turn off tracing
 	// dbmap.TraceOff()
-
-	dbmap.AddTableWithName(usermodel.User{}, "user").SetKeys(true, "Id")
-	dbmap.AddTableWithName(chainmodel.Chain{}, "chain").SetKeys(true, "Id")
-	dbmap.AddTableWithName(hotelmodel.Hotel{}, "hotel").SetKeys(true, "Id")
-	err = dbmap.CreateTablesIfNotExists()
-	checkErr(err, "Create tables failed")
 
 	return dbmap
 }

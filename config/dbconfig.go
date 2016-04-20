@@ -9,6 +9,7 @@ import (
 	"gopkg.in/gorp.v1"
 	"database/sql"
 	"fmt"
+	"github.com/jinzhu/gorm"
 )
 
 func checkErr(err error, msg string) {
@@ -45,4 +46,16 @@ func initDb() *gorp.DbMap {
 func Init() *gorp.DbMap {
 	var dbmap = initDb()
 	return dbmap
+}
+
+func InitGORM() *gorm.DB{
+	db, err := gorm.Open("mysql", "root:@/myapi?charset=utf8&parseTime=True&loc=Local")
+	if err != nil {
+		log.Fatalln("panic", err);
+		panic("failed to connect database")
+
+	}
+	db.LogMode(true)
+
+	return db
 }

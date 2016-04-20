@@ -7,6 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/manjeshpv/bb/api/chain/model"
 	"github.com/manjeshpv/bb/config"
+	"os"
 )
 
 func checkErr(err error, msg string) {
@@ -18,12 +19,13 @@ func checkErr(err error, msg string) {
 func GetChains(c *gin.Context) {
 	var chains []chainmodel.Chain
 	dbmap := dbconfig.Init()
-	defer dbmap.Db.Close()
+	dbmap.TraceOn("[gorp]", log.New(os.Stdout, "myapp:", log.Lmicroseconds))
 	_, err := dbmap.Select(&chains, "SELECT * FROM chain")
 
 	if err == nil {
 		c.JSON(200, chains)
 	} else {
+		//log.Fatal(err)
 		c.JSON(404, gin.H{"error": "no chain(s) into the table"})
 	}
 
@@ -42,6 +44,7 @@ func GetChain(c *gin.Context) {
 		content := &chainmodel.Chain{
 			Id:        chain_id,
 			Name: chain.Name,
+			HotelId: chain.HotelId,
 
 		}
 		c.JSON(200, content)
@@ -60,13 +63,13 @@ func PostChain(c *gin.Context) {
 	dbmap := dbconfig.Init()
 	if chain.Name != "" {
 
-		if insert, _ := dbmap.Exec(`INSERT INTO chain (name) VALUES (?)`, chain.Name, ); insert != nil {
+		if insert, _ := dbmap.Exec(`INSERT INTO chain (name,hotel_id) VALUES (?,?)`, chain.Name, chain.HotelId); insert != nil {
 			chain_id, err := insert.LastInsertId()
 			if err == nil {
 				content := &chainmodel.Chain{
 					Id:        chain_id,
 					Name: chain.Name,
-
+					HotelId: chain.HotelId,
 				}
 				c.JSON(201, content)
 			} else {
@@ -96,7 +99,7 @@ func UpdateChain(c *gin.Context) {
 		chain := chainmodel.Chain{
 			Id:        chain_id,
 			Name: json.Name,
-
+			HotelId: chain.HotelId,
 		}
 
 		if chain.Name != ""  {

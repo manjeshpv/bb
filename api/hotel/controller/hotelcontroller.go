@@ -40,8 +40,8 @@ func GetHotel(c *gin.Context) {
 
 		content := &hotelmodel.Hotel{
 			Id:        hotel_id,
-			Firstname: hotel.Firstname,
-			Lastname:  hotel.Lastname,
+			Name: hotel.Name,
+			ChainId:  hotel.ChainId,
 		}
 		c.JSON(200, content)
 	} else {
@@ -57,15 +57,15 @@ func PostHotel(c *gin.Context) {
 
 	log.Println(hotel)
 	dbmap := dbconfig.Init()
-	if hotel.Firstname != "" && hotel.Lastname != "" {
+	if hotel.Name != ""  {
 
-		if insert, _ := dbmap.Exec(`INSERT INTO hotel (firstname, lastname) VALUES (?, ?)`, hotel.Firstname, hotel.Lastname); insert != nil {
+		if insert, _ := dbmap.Exec(`INSERT INTO hotel (name, chain_id) VALUES (?, ?)`, hotel.Name, hotel.ChainId); insert != nil {
 			hotel_id, err := insert.LastInsertId()
 			if err == nil {
 				content := &hotelmodel.Hotel{
 					Id:        hotel_id,
-					Firstname: hotel.Firstname,
-					Lastname:  hotel.Lastname,
+					Name: hotel.Name,
+					ChainId:  hotel.ChainId,
 				}
 				c.JSON(201, content)
 			} else {
@@ -94,11 +94,11 @@ func UpdateHotel(c *gin.Context) {
 
 		hotel := hotelmodel.Hotel{
 			Id:        hotel_id,
-			Firstname: json.Firstname,
-			Lastname:  json.Lastname,
+			Name: json.Name,
+			ChainId:  json.ChainId,
 		}
 
-		if hotel.Firstname != "" && hotel.Lastname != "" {
+		if hotel.Name != ""  {
 			_, err = dbmap.Update(&hotel)
 
 			if err == nil {
